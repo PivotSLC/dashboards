@@ -233,7 +233,7 @@ function parseSheetData(rows) {
   return rows.map(r => ({
     id: r["Company Name"] || "",
     company: r["Company Name"] || "",
-    type: (r["Company Type"] || "Installer").trim(),
+    type: (r["Company Type"] || "Partner").trim(),
     q3: parseFloat(r["Invoiced Q3 2025"]) || 0,
     q4: parseFloat(r["Invoiced Q4 2025"]) || 0,
     q1: parseFloat(r["Invoiced Q1 2026"]) || 0,
@@ -290,7 +290,7 @@ Summary:
 - At Risk (declining, no deal activity): ${atRisk.length} accounts
 - Invoice Expected (declining but deal activity present): ${expected.length} accounts
 - Healthy (stable/growing): ${healthy.length} accounts
-- Distributors: ${filtered.filter(d=>d.type==='Distributor').length} | Installers: ${filtered.filter(d=>d.type==='Installer').length}
+- VARs: ${filtered.filter(d=>d.type==='VAR').length} | Partners: ${filtered.filter(d=>d.type==='Partner').length}
 
 Company-level data:
 ${companyLines}
@@ -301,7 +301,7 @@ Provide exactly 5 insights as a JSON array. Each insight object must have:
 
 Focus on:
 1. The single biggest revenue risk right now — name the account and the dollar impact
-2. Distributor vs installer channel patterns worth noting
+2. VAR vs partner channel patterns worth noting
 3. Accounts with promising signals (recent deals, new revenue appearing)
 4. A pattern or concentration risk the VP should be aware of
 5. One specific, actionable next step
@@ -387,8 +387,8 @@ function toggleInsights() {
 
 function applyFilters() {
   let d = STATE.data.filter(r => r.q3 + r.q4 + r.q1 >= 1000);
-  if (STATE.typeFilter === "distributor") d = d.filter(r => r.type === "Distributor");
-  else if (STATE.typeFilter === "installer") d = d.filter(r => r.type === "Installer");
+  if (STATE.typeFilter === "var") d = d.filter(r => r.type === "VAR");
+  else if (STATE.typeFilter === "partner") d = d.filter(r => r.type === "Partner");
   if (STATE.filter === "declining") d = d.filter(r => getSignal(r).type !== "healthy");
   else if (STATE.filter === "healthy") d = d.filter(r => getSignal(r).type === "healthy");
   else if (STATE.filter === "danger") d = d.filter(r => getSignal(r).type === "danger");
@@ -436,7 +436,7 @@ function cardHTML(d, maxVal) {
     <div class="card-header">
       <div style="max-width:55%">
         <div class="card-name">${d.company}</div>
-        <div class="card-type${d.type==='Distributor'?' dist':''}">${d.type}</div>
+        <div class="card-type${d.type==='VAR'?' dist':''}">${d.type}</div>
       </div>
       ${badgeHTML(signal)}
     </div>
@@ -474,7 +474,7 @@ function detailHTML(d) {
     <div class="detail-header">
       <div>
         <div class="detail-name">${d.company}</div>
-        <div class="detail-sub"><span class="dtype${d.type==='Distributor'?' dist':''}">${d.type}</span> · Total invoiced: ${fmtFull(total)}</div>
+        <div class="detail-sub"><span class="dtype${d.type==='VAR'?' dist':''}">${d.type}</span> · Total invoiced: ${fmtFull(total)}</div>
       </div>
       ${badgeHTML(signal)}
     </div>
@@ -571,8 +571,8 @@ function render() {
       <div class="filter-group">
         <span class="filter-label">TYPE:</span>
         <button class="${btnCls(STATE.typeFilter,'all',true)}" onclick="setTypeFilter('all')">All</button>
-        <button class="${btnCls(STATE.typeFilter,'distributor',true)}" onclick="setTypeFilter('distributor')">Distributors</button>
-        <button class="${btnCls(STATE.typeFilter,'installer',true)}" onclick="setTypeFilter('installer')">Installers</button>
+        <button class="${btnCls(STATE.typeFilter,'var',true)}" onclick="setTypeFilter('var')">VARs</button>
+        <button class="${btnCls(STATE.typeFilter,'partner',true)}" onclick="setTypeFilter('partner')">Partners</button>
       </div>
     </div>
     <div class="filters-row" style="margin-bottom:16px">
