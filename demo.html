@@ -1,12 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Sales Trend Dashboard — Demo</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root {
+/* Dark theme (default) */
+:root, [data-theme="dark"] {
   --bg: #0f1117;
   --surface: #181a23;
   --surface-hover: #1e2130;
@@ -15,13 +16,68 @@
   --text-muted: #8b8fa3;
   --text-dim: #5c6078;
   --green: #34d399;
-  --red: #f87171;
+  --red: #dc1a5d;
   --amber: #fbbf24;
   --blue: #60a5fa;
   --purple: #a78bfa;
   --q3: #60a5fa;
   --q4: #a78bfa;
-  --q1: #34d399;
+  --q1: #dc1a5d;
+  --white-alpha-02: rgba(255,255,255,0.02);
+  --white-alpha-03: rgba(255,255,255,0.03);
+  --white-alpha-04: rgba(255,255,255,0.04);
+  --white-alpha-10: rgba(255,255,255,0.1);
+  --white-alpha-20: rgba(255,255,255,0.2);
+  --logo-url: url('https://www.pivotslc.com/hubfs/Onboarding%20Docs/pivot-logo-white.png');
+  --alert-bg: rgba(220,26,93,0.08);
+  --alert-border: rgba(220,26,93,0.25);
+  --good-bg: rgba(52,211,153,0.08);
+  --good-border: rgba(52,211,153,0.25);
+  --amber-bg: rgba(251,191,36,0.08);
+  --amber-border: rgba(251,191,36,0.25);
+  --badge-danger-bg: rgba(220,26,93,0.1);
+  --badge-danger-border: rgba(220,26,93,0.25);
+  --badge-healthy-bg: rgba(52,211,153,0.1);
+  --badge-healthy-border: rgba(52,211,153,0.25);
+  --badge-expected-bg: rgba(251,191,36,0.1);
+  --badge-expected-border: rgba(251,191,36,0.25);
+}
+
+/* Light theme */
+[data-theme="light"] {
+  --bg: #f7f8fa;
+  --surface: #ffffff;
+  --surface-hover: #f0f1f5;
+  --border: #e2e5ea;
+  --text: #1a1a2e;
+  --text-muted: #4a5568;
+  --text-dim: #7c8797;
+  --green: #059669;
+  --red: #dc1a5d;
+  --amber: #d97706;
+  --blue: #2563eb;
+  --purple: #7c3aed;
+  --q3: #2563eb;
+  --q4: #7c3aed;
+  --q1: #dc1a5d;
+  --white-alpha-02: rgba(0,0,0,0.02);
+  --white-alpha-03: rgba(0,0,0,0.03);
+  --white-alpha-04: rgba(0,0,0,0.04);
+  --white-alpha-10: rgba(0,0,0,0.06);
+  --white-alpha-20: rgba(0,0,0,0.1);
+  --logo-url: url('https://info.pivotslc.com/hubfs/pivot-logo-2026.png');
+  --alert-bg: rgba(220,26,93,0.06);
+  --alert-border: rgba(220,26,93,0.2);
+  --good-bg: rgba(5,150,105,0.06);
+  --good-border: rgba(5,150,105,0.2);
+  --amber-bg: rgba(217,119,6,0.06);
+  --amber-border: rgba(217,119,6,0.2);
+  --badge-danger-bg: rgba(220,26,93,0.08);
+  --badge-danger-border: rgba(220,26,93,0.2);
+  --badge-healthy-bg: rgba(5,150,105,0.08);
+  --badge-healthy-border: rgba(5,150,105,0.2);
+  --badge-expected-bg: rgba(217,119,6,0.08);
+  --badge-expected-border: rgba(217,119,6,0.2);
 }
 * { margin:0; padding:0; box-sizing:border-box; }
 body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text); min-height:100vh; padding:32px; }
@@ -31,20 +87,23 @@ body { font-family:'DM Sans',sans-serif; background:var(--bg); color:var(--text)
 
 .header { margin-bottom:28px; }
 .header-top { display:flex; justify-content:space-between; align-items:center; margin-bottom:4px; }
-.logo { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
+.logo { display:flex; align-items:center; gap:12px; }
+.logo img { height:28px; }
+.logo-divider { width:1px; height:20px; background:var(--border); }
+.logo-text { font-size:10px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--text-dim); }
 .date-badge { font-size:11px; color:var(--text); background:var(--surface); border:1px solid var(--border); padding:5px 12px; border-radius:4px; font-family:'JetBrains Mono',monospace; font-weight:700; }
 .date-badge .dot { color:var(--green); margin-right:6px; }
-h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
+h1 { font-family:'Fraunces',serif; font-size:24px; font-weight:700; letter-spacing:-0.5px; }
 .subtitle { font-size:13px; color:var(--text-muted); margin-top:4px; }
 
 .scorecards { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; }
 .scorecards-left { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
 .scorecard { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px 24px; }
-.scorecard.alert { border-color:rgba(248,113,113,0.25); background:rgba(248,113,113,0.08); }
+.scorecard.alert { border-color:var(--alert-border); background:var(--alert-bg); }
 .scorecard.alert .sc-val { color:var(--red); }
-.scorecard.good { border-color:rgba(52,211,153,0.25); background:rgba(52,211,153,0.08); }
+.scorecard.good { border-color:var(--good-border); background:var(--good-bg); }
 .scorecard.good .sc-val { color:var(--green); }
-.scorecard.amber { border-color:rgba(251,191,36,0.25); background:rgba(251,191,36,0.08); }
+.scorecard.amber { border-color:var(--amber-border); background:var(--amber-bg); }
 .scorecard.amber .sc-val { color:var(--amber); }
 .sc-label { font-size:10px; font-weight:700; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-dim); margin-bottom:8px; }
 .sc-val { font-size:26px; font-weight:700; letter-spacing:-0.5px; font-family:'JetBrains Mono',monospace; }
@@ -77,7 +136,7 @@ h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
 @keyframes spin { to { transform:rotate(360deg); } }
 .insights-error { color:var(--red); font-size:12px; padding:8px 0; }
 .insight-list { list-style:none; display:flex; flex-direction:column; gap:12px; }
-.insight-item { display:flex; gap:12px; align-items:flex-start; padding:12px 16px; background:rgba(255,255,255,0.02); border-radius:8px; border:1px solid rgba(255,255,255,0.04); }
+.insight-item { display:flex; gap:12px; align-items:flex-start; padding:12px 16px; background:var(--white-alpha-02); border-radius:8px; border:1px solid var(--white-alpha-04); }
 .insight-icon { width:24px; height:24px; border-radius:6px; display:flex; align-items:center; justify-content:center; font-size:12px; flex-shrink:0; margin-top:1px; }
 .insight-icon.risk { background:rgba(248,113,113,0.15); }
 .insight-icon.opp { background:rgba(52,211,153,0.15); }
@@ -87,14 +146,14 @@ h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
 .insight-text { font-size:13px; line-height:1.5; color:var(--text-muted); }
 .insight-text strong { color:var(--text); font-weight:600; }
 .insights-refresh { display:inline-flex; align-items:center; gap:6px; margin-top:12px; background:transparent; border:1px solid var(--border); color:var(--text-dim); padding:5px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
-.insights-refresh:hover { border-color:rgba(255,255,255,0.2); color:var(--text-muted); }
+.insights-refresh:hover { border-color:var(--white-alpha-20); color:var(--text-muted); }
 
 .filters-row { display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; flex-wrap:wrap; gap:8px; }
 .filter-group { display:flex; gap:6px; align-items:center; }
 .filter-label { font-size:10px; color:var(--text-dim); font-weight:600; margin-right:2px; }
 .btn { background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:5px 12px; border-radius:6px; font-size:11px; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all 0.15s; }
-.btn:hover { border-color:rgba(255,255,255,0.2); }
-.btn.active { background:rgba(255,255,255,0.1); border-color:rgba(255,255,255,0.2); color:var(--text); }
+.btn:hover { border-color:var(--white-alpha-20); }
+.btn.active { background:var(--white-alpha-10); border-color:var(--white-alpha-20); color:var(--text); }
 .btn.type-active { background:rgba(96,165,250,0.15); border-color:rgba(96,165,250,0.4); color:var(--blue); }
 .btn-sm { padding:4px 10px; border-radius:4px; font-size:10px; }
 
@@ -113,14 +172,14 @@ h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
 
 .badge { display:inline-flex; align-items:center; gap:4px; padding:3px 8px; border-radius:4px; font-size:10px; font-weight:600; font-family:'JetBrains Mono',monospace; white-space:nowrap; }
 .badge .bdot { width:6px; height:6px; border-radius:50%; display:inline-block; }
-.badge.danger { background:rgba(248,113,113,0.1); color:var(--red); border:1px solid rgba(248,113,113,0.25); }
-.badge.expected { background:rgba(251,191,36,0.1); color:var(--amber); border:1px solid rgba(251,191,36,0.25); }
-.badge.healthy { background:rgba(52,211,153,0.1); color:var(--green); border:1px solid rgba(52,211,153,0.25); }
+.badge.danger { background:var(--badge-danger-bg); color:var(--red); border:1px solid var(--badge-danger-border); }
+.badge.expected { background:var(--badge-expected-bg); color:var(--amber); border:1px solid var(--badge-expected-border); }
+.badge.healthy { background:var(--badge-healthy-bg); color:var(--green); border:1px solid var(--badge-healthy-border); }
 
 .mini-bars { display:flex; flex-direction:column; gap:2px; }
 .mini-row { display:flex; align-items:center; gap:6px; height:16px; }
 .mini-label { font-size:9px; color:var(--text-dim); width:18px; text-align:right; font-weight:600; }
-.mini-track { flex:1; height:12px; background:rgba(255,255,255,0.04); border-radius:3px; overflow:hidden; }
+.mini-track { flex:1; height:12px; background:var(--white-alpha-04); border-radius:3px; overflow:hidden; }
 .mini-fill { height:100%; border-radius:3px; transition:width 0.6s ease; }
 .mini-val { font-size:10px; font-family:'JetBrains Mono',monospace; width:55px; text-align:right; }
 
@@ -141,11 +200,11 @@ h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
 .detail-labels span { flex:1; text-align:center; font-size:10px; font-weight:600; color:var(--text-muted); }
 
 .trend-row { display:flex; gap:12px; margin-bottom:16px; }
-.trend-box { flex:1; background:rgba(255,255,255,0.03); border-radius:8px; padding:12px; text-align:center; }
+.trend-box { flex:1; background:var(--white-alpha-03); border-radius:8px; padding:12px; text-align:center; }
 .trend-label { font-size:10px; color:var(--text-dim); margin-bottom:4px; font-weight:600; }
 .trend-val { font-size:16px; font-weight:700; font-family:'JetBrains Mono',monospace; }
 
-.deal-box { background:rgba(255,255,255,0.03); border-radius:8px; padding:12px; }
+.deal-box { background:var(--white-alpha-03); border-radius:8px; padding:12px; }
 .deal-title { font-size:10px; color:var(--text-dim); font-weight:600; margin-bottom:6px; }
 .deal-row { display:flex; justify-content:space-between; font-size:12px; }
 .deal-row span { color:var(--text-muted); }
@@ -153,7 +212,13 @@ h1 { font-size:24px; font-weight:700; letter-spacing:-0.5px; }
 .deal-row .amt { color:var(--amber); font-weight:700; }
 
 .footer { text-align:center; padding:24px 0 8px; font-size:10px; color:var(--text-dim); }
-.footer a { color:var(--text-muted); text-decoration:underline; }
+.footer a { color:var(--red); text-decoration:none; font-weight:600; }
+.footer a:hover { text-decoration:underline; }
+
+.theme-toggle { display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:6px 12px; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:600; color:var(--text-muted); transition:all 0.2s; }
+.theme-toggle:hover { border-color:var(--white-alpha-20); color:var(--text); }
+.theme-toggle svg { width:14px; height:14px; }
+.header-right { display:flex; align-items:center; gap:10px; }
 
 @media(max-width:1100px) {
   .main-grid { grid-template-columns:1fr; }
@@ -246,10 +311,11 @@ function parseSheetData(rows) {
 function getSignal(d) {
   const isDeclining = d.q1 < d.q4 || (d.q1 === 0 && d.q4 === 0 && d.q3 > 0);
   const hasRecentClose = d.lastClose && new Date(d.lastClose) >= new Date("2026-01-01");
-  if (!isDeclining) return { type: "healthy", label: "Healthy", color: "#34d399" };
-  if (d.dealAmt > 0) return { type: "expected", label: "~" + fmt(d.dealAmt) + " expected", color: "#fbbf24" };
-  if (hasRecentClose) return { type: "expected", label: "Invoice expected", color: "#fbbf24" };
-  return { type: "danger", label: "No deal activity", color: "#f87171" };
+  const cs = getComputedStyle(document.documentElement);
+  if (!isDeclining) return { type: "healthy", label: "Healthy", color: cs.getPropertyValue('--green').trim() };
+  if (d.dealAmt > 0) return { type: "expected", label: "~" + fmt(d.dealAmt) + " expected", color: cs.getPropertyValue('--amber').trim() };
+  if (hasRecentClose) return { type: "expected", label: "Invoice expected", color: cs.getPropertyValue('--amber').trim() };
+  return { type: "danger", label: "No deal activity", color: cs.getPropertyValue('--red').trim() };
 }
 
 function fmt(v) {
@@ -534,11 +600,20 @@ function render() {
   document.getElementById("app").innerHTML = `
     <div class="header">
       <div class="header-top">
-        <span class="logo">Sales Trend Dashboard</span>
-        <span class="date-badge"><span class="dot">●</span>Last Updated: ${STATE.lastUpdated}</span>
+        <div class="logo">
+          <img id="theme-logo" src="${document.documentElement.getAttribute('data-theme')==='light'?'https://info.pivotslc.com/hubfs/pivot-logo-2026.png':'https://www.pivotslc.com/hubfs/Onboarding%20Docs/pivot-logo-white.png'}" alt="Pivot">
+          <span class="logo-divider"></span>
+          <span class="logo-text">Sales Trend Dashboard</span>
+        </div>
+        <div class="header-right">
+          <button class="theme-toggle" onclick="toggleTheme()">
+            ${document.documentElement.getAttribute('data-theme')==='light'?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg> Dark':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg> Light'}
+          </button>
+          <span class="date-badge"><span class="dot">●</span>Last Updated: ${STATE.lastUpdated}</span>
+        </div>
       </div>
       <h1>Quarterly Invoice Trends</h1>
-      <p class="subtitle">Q3 2025 → Q4 2025 → Q1 2026 · Accounts under $1K excluded · <strong style="color:var(--amber)">DEMO DATA</strong></p>
+      <p class="subtitle">Q3 2025 → Q4 2025 → Q1 2026 · Accounts under $1K excluded · <strong style="color:var(--red)">DEMO DATA</strong></p>
     </div>
 
     <div class="scorecards">
@@ -600,8 +675,26 @@ function render() {
     <div class="footer">
       Data from HubSpot · Demo Data · Built by <a href="https://pivotslc.com" target="_blank">Pivot</a> — HubSpot Solutions Partner
     </div>
+    <div style="text-align:center;padding-bottom:16px;font-size:11px;color:var(--text-dim)">
+      <a href="https://www.pivotslc.com/service-data-architecture" target="_blank" style="color:var(--red);text-decoration:none;font-weight:600;">See how we build reports like this &rarr;</a>
+    </div>
   `;
 }
+
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('pivot-dashboard-theme', next);
+  render();
+}
+
+// Restore saved theme preference
+(function() {
+  const saved = localStorage.getItem('pivot-dashboard-theme');
+  if (saved) document.documentElement.setAttribute('data-theme', saved);
+})();
 
 function selectCompany(name) {
   STATE.selected = STATE.selected === name ? null : name;
